@@ -35,7 +35,7 @@
           </div>
 
           <div class="has-text-centered">
-            <button type="button" class="button is-primary" id="log_in" >
+            <button type="button" class="button is-primary" id="login" >
                 登入
             </button>
             <button type="button" class="button is-light">
@@ -47,8 +47,8 @@
     </div>
   </section>
   <script>
-    
-    $('#log_in').click((evt) => {
+    // 登入
+    $('#login').click((evt) => {
       evt.preventDefault();
       log_in();
     })
@@ -61,7 +61,7 @@
       axios.post('/api/login', data)
       .then((res) => {
         if(res.status === 200) {
-          // 登入成功時, 將回傳的客資存入 localstorage 中, 並將用戶導至首頁
+          // 登入成功時, 將回傳的會員資料存入 localstorage 並將用戶導至首頁
           setInfo("custAccount", JSON.stringify(res.data.custAccount))
           window.location.href = "/index";
         }

@@ -28,8 +28,8 @@
       </a>
     </div>
     <div class="navbar-end">
-      <div class="navbar-item has-dropdown is-hoverable ">
-        <a class="navbar-link" >
+      <div class="navbar-item has-dropdown is-hoverable " id="user">
+        <a class="navbar-link" id="userName">
           <i class="fas fa-user"></i>&nbsp;使用者
         </a>
         <div class="navbar-dropdown">
@@ -37,10 +37,10 @@
             訂單紀錄
           </a>
           <a class="navbar-item is-white" >
-            <a class="navbar-item" href="/admin">後臺管理</a>
+            <a class="navbar-item" href="/admin" class="backend">後臺管理</a>
           </a>
           <hr class="navbar-divider">
-          <a class="navbar-item is-white" href="/logout" id="logout">登出</a>
+          <a class="navbar-item is-white" href="/logout" id="log_out">登出</a>
         </div>
       </div>
         <div class="navbar-item">
@@ -49,15 +49,58 @@
         <div class="navbar-item">
           <div class="buttons">
             <a class="button is-primary" href="/register" id="register">註冊</a>
-            <a class="button is-light" href="/login" id="login">登入</a>  
+            <a class="button is-light" href="/login" id="log_in">登入</a>  
           </div>
         </div>
-
       </div>
     </div>
   </nav>
 
 </body>
-  
+  <script>
+    // 先檢查是否有 會員登入的 cookie
+    $(document).ready(function init() {
+      let cust = null;
+      if (getCookie("custAccount")) {
+        localStorage.removeItem("custAccount"); // 清空
+      } else {
+        cust = localStorage.getItem("custAccount");
+      }
+      cust = JSON.parse(cust) // 從字串轉換回 JSON
+      if (cust !== null) {
+        $('#userName').html(`<i class="fas fa-user"></i>&nbsp;：${cust.name}`);
+        $('#log_in').hide();
+        $('#register').hide();
+        $('#user').show()
+        if (cust.type === 2){
+          $('#backend').show();
+        } else {
+          $('#backend').hide();
+        }
+      } else {
+        $('#user').hide()
+      }
+    })
+
+    function getCookie() {
+      // 例如 custaccount=.... 是否存在
+      let nameEq = name + "=";
+      // 因 cookie 資料為字串形式, 各項資料以;做分割
+      // 所以檢查方式為用 ; 分割後檢查每一筆資料開頭是否為 custaccount=
+      let ca = document.cookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i]; //取得字符串
+        // 將字串中空格去除
+        while (c.charAt(0) === " ") {
+          c = c.substring(1, c.length);
+        }
+        if (c.indexOf(nameEq) === 0) {
+          return unescape(c.substring(nameEq.length, c.length));
+        }
+      }
+      return false;
+    }
+    
+  </script>
 </html>
 
