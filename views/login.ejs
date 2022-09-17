@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會員登入</title>
+</head>
+<body>
+  <%- include("./basic/header.ejs")%>
+  <section class="container">
+    <div class="columns">
+      <div class="column is-4 is-offset-4 is-offset-4">
+        <h2 class="title has-text-centered">會員登入</h2>
+        <form class="form">
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label">帳號：</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                  <input class="input" id="account">
+              </div>
+            </div>
+          </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">密碼：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="password" id="password">
+                </div>
+              </div>
+          </div>
+
+          <div class="has-text-centered">
+            <button type="button" class="button is-primary" id="log_in" >
+                登入
+            </button>
+            <button type="button" class="button is-light">
+                <a href="/register">註冊</a>
+            </button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <script>
+    
+    $('#log_in').click((evt) => {
+      evt.preventDefault();
+      log_in();
+    })
+
+    function log_in() {
+      let data = {
+        account: $("#account").val(),
+        password: $("#password").val()
+      }
+      axios.post('/api/login', data)
+      .then((res) => {
+        if(res.status === 200) {
+          // 登入成功時, 將回傳的客資存入 localstorage 中, 並將用戶導至首頁
+          setInfo("custAccount", JSON.stringify(res.data.custAccount))
+          window.location.href = "/index";
+        }
+      })
+      .catch((error) => {
+        alert("登入失敗，請重新登入。")
+        location.reload();
+      })
+    }
+
+    function setInfo(key, value) {
+      localStorage.setItem(key, value);
+      setCookie(key, value, 600); // 登入有效時間6分鐘
+    }
+
+    function setCookie(key, value, seconds) {
+      seconds = seconds || 0;
+      let expires = "";
+      if (seconds !== 0) {      //設置 cookie 有效時間   
+        let date = new Date();
+        // 此處有效時間單位為毫秒
+        date.setTime(date.getTime() + (seconds * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      // 將設置好的資訊存回 cookie 中
+      document.cookie = name + "=" + escape(value) + expires + "; path=/";   
+    }
+    
+  </script>
+</body>
+  
+</html>
+

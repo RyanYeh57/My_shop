@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>購物車</title>
+</head>
+<body>
+  <%- include("./basic/header.ejs") %>
+    <section class="container">
+      <div class="columns">
+        <!-- <div id="Page1" class=" column has-text-centered is-12 is-multiline">
+          <h1 class="title">購物車</h1>
+          <table class="table is-bordered is-fullwidth">
+            <thead>
+              <tr>
+                <th>商品名稱</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>小計</th>
+                <th>移除商品</th>
+              </tr>
+            </thead>
+            <tbody class="products-content has-text-centered"></tbody>
+          </table>
+          <hr>
+          <h5 class="title is-5 has-text-right $weight-semibold">總計：<span>0</span>元</h5>
+          <div class="has-text-right">
+            <button class="button is-large is-danger">填寫訂單去</button>
+          </div>
+        </div> -->
+
+        <div id="Page2" class="column is-half is-offset-one-quarter is-left has-text-centered">
+          <form class="form">
+            <h1 class="title">訂單資料</h1>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label" >收件人姓名：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label" >收件人電話：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label" >收件人地址：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label" >結帳金額：</label>
+              </div>
+              <div class="field-body is-size-3">
+                <div class="field ">
+                    20000元
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label" >付款方式：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <input type="radio" id="credit" name="payment" value="credit" class="is-size-4">
+                  <label for="credit" class="is-size-4">信用卡付款</label>
+                  <input type="radio" id="bank" name="payment" value="bank" class="is-size-4">
+                  <label for="bank" class="is-size-4">銀行轉帳</label>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="has-text-right">
+              <button id="submitOrder" class="button is-danger is-large" onclick="submitOrder()">結帳去</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+    <style>
+    </style>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- stylesheet -->
+  <link rel="stylesheet" href="/public/stylesheets/style.css">
+  <title>會員註冊</title>
+</head>
+<body>
+  <%- include("./basic/header.ejs")%>
+  <section class="container">
+    <div class="columns">
+      <div class="column is-6 is-offset-3 is-offset-3">
+        <h2 class="title has-text-centered">會員註冊</h2>
+        <form class="form" action="post">
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label" >姓名：</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                  <input class="input" type="text">
+              </div>
+            </div>
+          </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal ">
+                <label class="label">聯絡電話：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">電子信箱：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="email">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">生日：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="date">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">帳號：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="text">
+                </div>
+              </div>
+            </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">密碼：</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                      <input class="input" type="text">
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">密碼確認：</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                      <input class="input" type="text">
+                  </div>
+                </div>
+              </div>
+          <div class="has-text-centered">
+            <button type="button" class="button is-primary is-medium">
+                會員註冊
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
