@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- stylesheet -->
-  <link rel="stylesheet" href="/public/stylesheets/style.css">
   <title>會員註冊</title>
 </head>
 <body>
@@ -21,7 +19,7 @@
             </div>
             <div class="field-body">
               <div class="field">
-                  <input class="input" type="text">
+                  <input class="input" type="text" id="name">
               </div>
             </div>
           </div>
@@ -31,7 +29,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="text">
+                    <input class="input" type="text" id="phone">
                 </div>
               </div>
             </div>
@@ -41,7 +39,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="email">
+                    <input class="input" type="email" id="email">
                 </div>
               </div>
             </div>
@@ -51,7 +49,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="date">
+                    <input class="input" type="date" id="birth">
                 </div>
               </div>
             </div>
@@ -61,7 +59,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="text">
+                    <input class="input" type="text" id="account">
                 </div>
               </div>
             </div>
@@ -71,7 +69,7 @@
                 </div>
                 <div class="field-body">
                   <div class="field">
-                      <input class="input" type="text">
+                      <input class="input" type="password" id="password">
                   </div>
                 </div>
               </div>
@@ -81,12 +79,12 @@
                 </div>
                 <div class="field-body">
                   <div class="field">
-                      <input class="input" type="text">
+                      <input class="input" type="password" id="passwordCheck">
                   </div>
                 </div>
               </div>
           <div class="has-text-centered">
-            <button type="button" class="button is-primary is-medium">
+            <button type="button" class="button is-primary is-medium" id="sign_up">
                 會員註冊
             </button>
           </div>
@@ -94,5 +92,39 @@
       </div>
     </div>
   </section>
+
+  <script>
+    $('#sign_up').click((evt) => {
+      evt.preventDefault;
+      register();
+    })
+
+    function register() {
+      if ($('#password').val() === $('#passwordCheck').val()) {
+        let data = {
+          name: $('#name').val(),
+          cellphone: $('#phone').val(),
+          email: $('#email').val(),
+          birthday: $('#birth').val(),
+          account: $('#account').val(),
+          password: $('#password').val()
+        };
+        axios.post("api/register", data)
+          .then((res) => {
+            if (res.status === 200) {
+              alert('註冊成功!');
+              window.location.href = "/login";
+            }
+          })
+          .catch((error) => {
+            alert('註冊失敗!請重新操作!');
+            location.reload();
+          })
+
+      } else {
+        alert ('密碼驗證錯誤!請重新輸入')
+      }
+    }
+  </script>
 </body>
 </html>
