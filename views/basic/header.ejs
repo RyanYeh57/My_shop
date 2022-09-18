@@ -36,8 +36,8 @@
           <a class="navbar-item is-white" href="/history">
             訂單紀錄
           </a>
-          <a class="navbar-item is-white" >
-            <a class="navbar-item" href="/admin" class="backend">後臺管理</a>
+          <a class="navbar-item is-white" href="/admin" id="backend">
+            後臺管理
           </a>
           <hr class="navbar-divider">
           <a class="navbar-item is-white" href="/logout" id="log_out">登出</a>
@@ -67,21 +67,22 @@
         cust = localStorage.getItem("custAccount");
       }
       cust = JSON.parse(cust) // 從字串轉換回 JSON
+      console.log(cust);
       if (cust !== null) {
         $('#userName').html(`<i class="fas fa-user"></i>&nbsp;：${cust.name}`);
         $('#log_in').hide();
         $('#register').hide();
         $('#user').show()
-        if (cust.type === 2){
-          $('#backend').show();
-        } else {
+        if (cust.type !== '2') {
           $('#backend').hide();
+        } else {
+          $('#backend').show();
         }
       } else {
         $('#user').hide()
       }
     })
-
+    // 解析 cookie
     function getCookie() {
       // 例如 custaccount=.... 是否存在
       let nameEq = name + "=";
@@ -100,7 +101,18 @@
       }
       return false;
     }
-    
+
+    // 登出
+     $('#log_out').click((evt) => {
+        evt.preventDefault;
+        log_out();
+      })
+
+    function log_out() {
+      window.localStorage.removeItem("custAccount"); 
+      location.reload();
+      alert("您已登出成功！");
+    }
   </script>
 </html>
 
