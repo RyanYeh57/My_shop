@@ -62,7 +62,8 @@
     $(document).ready(function init() {
       let cust = null;
       if (getCookie("custAccount")) {
-        localStorage.removeItem("custAccount"); // 清空
+        localStorage.removeItem();
+        console.log('hi') // 清空
       } else {
         cust = localStorage.getItem("custAccount");
       }

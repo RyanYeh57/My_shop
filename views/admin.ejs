@@ -9,9 +9,12 @@
 <body>
   <%- include("./basic/header.ejs")%>
   <section class="container">
-      <h2 class="title is-3 has-text-centered">商品管理</h2>
-    <div class="columns">
-      <div class="column is-6 is-offset-3 is-offset-3">
+      <h2 class="title is-3 has-text-centered mt-5">商品管理</h2>
+      <div class="block has-text-right">
+      <button class="button js-modal-trigger is-medium is-link" data-target="modal">
+        新增商品
+      </button>
+    </div>
         <table class="table is-bordered is-fullwidth">
           <thead>
             <tr>
@@ -25,15 +28,235 @@
               <th>刪除商品</th>
            </tr>
           </thead>
-          <tbody>
-    
-          </tbody>
+          <tbody id="products-content"></tbody>
         </table>
-        
       </div>
-    </div>
+
+      <!-- model -->
+      <div id="modal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="title is-3 modal-card-title has-text-centered ">新增商品</p>
+            <button class="delete" aria-label="close"></button>
+          </header>
+          <section class="modal-card-body">
+            <form class="form">
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label" >商品名稱：</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                      <input class="input" type="text" id="pdName">
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label" >商品敘述：</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                      <input class="input" type="text" id="pdDesc">
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label" >商品價格：</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                      <input class="input" type="text" id="pdPrice">
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label" >庫存數量：</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                      <input class="input" type="text" id="pdInventory">
+                  </div>
+                </div>
+              </div>
+              <div id="file" class="file has-name">
+                <label class="file-label">
+                  <input class="file-input" type="file" name="pdImage">
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                      上傳商品圖片
+                    </span>
+                  </span>
+                  <span class="file-name">
+                    No file uploaded
+                  </span>
+                </label>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label" >商品狀態：</label>
+                </div>
+                <div class="field is-narrow">
+                  <div class="control">
+                    <div class="select  is-fullwidth">
+                      <select id="pdStatus">
+                        <option value="A">上架</option>
+                        <option value="S">下架</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" id="addProduct">新增</button>
+            <button class="button" id="cancel">取消</button>
+          </footer>
+        </div>
+      
+        <button class="modal-close is-large" aria-label="close"></button>
 
     
   </section>
+  <script>
+    let selectId = "";
+    let productList = [];
+
+    // 初始化時將商品資料從資料庫取出，並將它儲存到 productList
+    $(document).ready(
+      function init() {
+        axios.get('/api/products')
+        .then((res) => {
+          let html = "";
+          if (res.status === 200 && res.data.productList !== null 
+              && res.data.productList !== undefined 
+              && res.data.productList.length > 0) {
+            productList = res.data.productList;
+            for (let i = 0; productList.length > i; i++){
+              html += ( // table 內容
+                `<tr>
+                    <th>${productList[i].name}</th>
+                    <th>${productList[i].amount}</th>
+                    <th>${productList[i].inventory}</th>
+                    <th>${productList[i].description}</th>
+                    <th>${productList[i].img !== undefined && productList[i].img !== null && productList[i].img.length > 20 
+                        ? productList[i].img.slice(0,27) + "..." 
+                        : "N/A"}
+                    </th>
+                    <th>${"A" === productList[i].status ? "上架中" : "已下架"}</th>
+                    <th><button id="showMod-${productList[i].id}" class="button is-primary" data-toggle="modal" data-target="#modifyModal">修改</button></th>
+                    <th><button id="delete-${productList[i].id}" class="button is-danger">刪除</button></th>
+                    </tr>`
+              )}
+            $('#products-content').html(html)
+          } else {
+                alert("查無商品資料！")
+          }
+        })
+        .catch((error) => {
+          alert("系統發生錯誤，請洽管理員。");
+          location.reload();
+        })
+        $('#products').DataTable({"info": false})
+    })
+
+    // bulma 內建 modal js
+    document.addEventListener('DOMContentLoaded', () => {
+      // Functions to open and close a modal
+      function openModal($el) {
+        $el.classList.add('is-active');
+      }
+
+      function closeModal($el) {
+        $el.classList.remove('is-active');
+      }
+
+      function closeAllModals() {
+        (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+          closeModal($modal);
+        });
+      }
+
+      // Add a click event on buttons to open a specific modal
+      (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+        const modal = $trigger.dataset.target;
+        const $target = document.getElementById(modal);
+
+        $trigger.addEventListener('click', () => {
+          openModal($target);
+        });
+      });
+
+      // Add a click event on various child elements to close the parent modal
+      (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+        const $target = $close.closest('.modal');
+
+        $close.addEventListener('click', () => {
+          closeModal($target);
+        });
+      });
+
+      // Add a keyboard event to close all modals
+      document.addEventListener('keydown', (event) => {
+        const e = event || window.event;
+
+        if (e.keyCode === 27) { // Escape key
+          closeAllModals();
+        }
+      });
+    });
+
+    // bulma 內建上傳圖片顯示
+    const fileInput = document.querySelector('#file input[type=file]');
+    fileInput.onchange = () => {
+      if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#file .file-name');
+        fileName.textContent = fileInput.files[0].name; 
+        file = fileInput.files[0];
+      }
+      return file;
+    }
+
+    // 新增商品
+    $('#addProduct').click((evt) => {
+      evt.preventDefault();
+      addSubmit();
+    })
+    function addSubmit() {
+    // 因有 file 檔案, 需使用 formdata 的方式傳遞檔案以及參數,
+    // 並在後端搭配 multer 解析 formdata 中的 file 以及各項參數
+      let formdata = new FormData();
+
+      formdata.append('name', $('#pdName').val());
+      formdata.append('desc', $('#pdDesc').val());
+      formdata.append('amount', $('#pdPrice').val());
+      formdata.append('inventory', $('#pdInventory').val());
+      formdata.append('status',$('#pdStatus').val());
+      formdata.append('img', file);
+
+      // 新增產品資訊, 需注意用 fromdata 傳遞參數時, header 需指定 content-type
+      axios.post('/api/product',  formdata, { headers: {'Content-Type': 'multipart/form-data' }} )
+      .then((res) => {
+        if(res.status === 200) {
+            alert("新增成功！");           
+            location.reload();
+        } else {
+            alert("新增失敗，請洽管理員。")
+        }
+      })
+      .catch((error) => {
+        alert("系統發生錯誤，請洽管理員。");
+        location.reload();
+      })
+    }
+
+  </script>
 </body>
 </html>

@@ -3,8 +3,16 @@ const router = express.Router();
 const mysqlDb = require('../connection/mySqlConnetion')
 const Mongoclient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017/products'
-const btPayment = require("braintree");
+const multer = require('multer')
 
+const upload = multer({
+  limit: {
+    // 限制上傳檔案大小為 10000000 byte
+    fileSize: 10000000
+  }
+})
+
+// const btPayment = require("braintree");
 // const gateway = new braintree.BraintreeGateway({
 //   environment: braintree.Environment.Sandbox,
 //   merchantId: config.get("braintree_merchant_id"),
@@ -21,7 +29,7 @@ router.route("/products")
   // mysql 取得資料
   // 1 -> mysql 取得成功, mongodb 取得圖片資料  
   mysqlDb.query(
-    "SELECT * FROM products;",
+    "SELECT * FROM product;",
     (err, result) => {
       if (err) {
         res.status(500).json({message:"Mysql error"});
@@ -102,7 +110,7 @@ router.route("/histroy/:id")
 .get((req, res) => {
   let cust_id = req.params.id;
   mysqlDb.query(
-    "SELECT * FROM shop_order WHERE cust_id = ?",[cust_id],
+    "SELECT * FROM shop_order WHERE cust_id = ?;",[cust_id],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -118,7 +126,7 @@ router.route("/submitOrder")
 .post((req, res) => {
   let data = req.body;
   mysqlDb.query(
-    "INSERT INTO shop_order (cust_id, cust_name, phone, address, status, total) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO shop_order (cust_id, cust_name, phone, address, status, total) VALUES (?, ?, ?, ?, ?, ?);",
     [data.custAccount.id, data.order.name, data.order.phone, data.order.address, 1, data.order.tatal],
     (err, result) => {
       if (err) {
@@ -129,6 +137,49 @@ router.route("/submitOrder")
     }
   )
 })
+
+// 後臺API
+// 新增產品
+router.route("/product")
+.post(upload.single('img'),
+  (req, res) => {
+    let data = req.body;
+    let file = req.file;
+    // 將照片轉成字串
+    let imageSrting;
+    if (file !== undefined && file !== null) {
+      imageSrting = `data:image/gif;base64,${file.buffer.toString('base64')}`
+    }
+    mysqlDb.query(
+      "INSERT INTO product (name, description, amount, inventory, status) VALUES (?, ?, ?, ?, ?);",
+      [data.name, data.desc, data.amount, data.inventory, data.status],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(400).json()
+        } else {
+          // 商品資料存入 Mysql 成功後，將照片字串存入 Mongodb 
+          Mongoclient.connect(url, (err, client) => {
+            if (err) {
+              console.log(err);
+              res.status(400).json();
+            } else {
+              let db = client.db("products");
+              let image = db.collection("image");
+              image.insertOne({
+                id: result.insertId,
+                image: imageSrting
+              }, (err, response) => {
+                if (err) console.log(err)
+                else res.status(200).json()
+              })
+            }
+          })
+        }
+      }
+    )
+})
+
 
 
 module.exports = router;
