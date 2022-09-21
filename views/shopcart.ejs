@@ -23,7 +23,7 @@
                 <th>移除商品</th>
               </tr>
             </thead>
-            <tbody class="products-content has-text-centered"></tbody>
+            <tbody class="products-content"></tbody>
           </table>
           <hr>
           <h5 class="title is-5 has-text-right $weight-semibold">總計：<span>0</span>元</h5>
@@ -90,15 +90,51 @@
             </div>
             <hr>
             <div class="has-text-right">
-              <button id="submitOrder" class="button is-danger is-large" onclick="submitOrder()">結帳去</button>
+              <button id="submitOrder" class="button is-danger is-large">結帳去</button>
             </div>
           </form>
         </div> -->
 
       </div>
     </section>
-    <style>
-    </style>
+  <script>
+    let productList;
+    $(document).ready(function init() {
+      productList = localStorage.getItem("shopcart") !== undefined
+      && localStorage.getItem("shopcart") !== null
+      && localStorage.getItem("shopcart") > 1 
+      ? JSON.parse(localStorage.getItem("shopcart")) : [];
 
+      let tatal = 0;
+      let html = "";
+
+      $('#submitOrder').on('click', () => {
+        alert("購買成功!再去看看其他商品吧!");
+        localStorage.setItem("shopcart", "");
+        window.location.href("/index")
+      })
+
+      if (productList !== []) {
+        for (let i = 0; i < productList.length; i++) {
+          tatal = productList[i].price * productList[i].amount
+          html += (
+            `<tr id="content-${productList[i].id}">
+              <th>${productList[i].name}</th>
+              <th id="price-${productList[i].id}">${productList[i].price}</th>
+              <th>
+                <button class="button" id="minus-${productList[i].id}">-</button>
+                <span id="count-${productList[i].id}">${productList[i].amount}</span>
+                <button class="button" id="plus-${productList[i].id}">+</button>
+              </th>
+              <th id="sumAmount${productList[i].id}">${total}</th>
+              <th><button class="button" id="delete-${productList[i].id}">刪除</button></th>
+             </tr>
+            `
+          )
+        }
+        $('.products-content').html(html);
+      }
+    })
+  </script>
 </body>
 </html>

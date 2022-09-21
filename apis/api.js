@@ -3,7 +3,8 @@ const router = express.Router();
 const mysqlDb = require('../connection/mySqlConnetion')
 const Mongoclient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017/products'
-const multer = require('multer')
+const multer = require('multer');
+const { response } = require('express');
 
 const upload = multer({
   limit: {
@@ -179,7 +180,54 @@ router.route("/product")
       }
     )
 })
-
+// 修改商品
+router.route("/product/:id")
+.put(upload.single('img'),
+(req, res) => {
+  let id = req.params.id
+  let data = req.body;
+  let file = req.file;
+  let imageSrting;
+  if (file !== undefined && file !== null) {
+    imageSrting = `data:image/gif;base64,${file.buffer.toString('base64')}`
+  }
+  // 用 id 更新 Mysql 
+  mysqlDb.query(
+    "UPDATE product set name= ?, description = ?, amount = ?, inventory = ?, status = ? where id = ?;",
+    [data.name, data.desc, data.amount, data.inventory, data.status, id], 
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(400).json()
+      } else {
+        Mongoclient.connect(url, (err, client) => {
+          if (err) {
+            res.status(400).json()
+          } else {
+            if (imgString != null && imgString.length > 0) {
+              let db = client.db("products");
+              let image = db.collection("image");
+              image.updateOne(
+                {"id":Number(id)},
+                {$set: {"image": imageSrting}},
+                (err, response) => {
+                  if (err) {
+                    res.status(400).json();
+                  } else {
+                    res.status(200).json();
+                  }
+                }
+              )     
+            } else {
+              res.status(200).json()
+            }
+          }
+        })
+      }
+    }
+  )
+}
+)
 
 
 module.exports = router;

@@ -43,9 +43,10 @@
                         </div>
                 
                       <div class="content">
-                        <p>售價： ${productList[i].amount} 元</p>
+                        <p class="has-text-danger has-text-weight-bold">售價： ${productList[i].amount} 元</p>
                         ${productList[i].inventory > 0 ? 
-                        `<button class="button is-link">立即搶購</button>` : `<button class="button is-gary-darker disabled">補貨中</button>` 
+                        `<button class="button is-link" id="buy-${productList[i].id}">立即搶購</button>` : 
+                        `<button class="button has-background-light" title="Disabled button" disabled>補貨中</button>` 
                         }                  
                       </div>
                     </div>
@@ -53,18 +54,49 @@
                 </div>
                 `
               )
-            }
-            $('#cards').html(html)            
+            }      
           } else {
             $('#indexTitle').html("商城維護中")
           }
+          $('#cards').html(html)
+          
+          for (let i = 0; i < productList.length; i++) {
+            $(`#buy-${productList[i].id}`).click((evt) => {
+              evt.preventDefault();
+              buyProduct(JSON.stringify(productList[i]))
+            })
+          }   
         })
         .catch((error) => {
-            alert("系統發生錯誤，請洽管理員。");
-            location.reload();
+          alert("系統發生錯誤，請洽管理員。");
+          location.reload();
         })
       }
     )
+    // 新增商品到購物車
+    function buyProduct(product) {
+      product = JSON.parse(product);
+      // 查看 localStorage 內是否有購物車資料
+      let shopcart = window.localStorage.getItem("shopcart") != undefined
+      && window.localStorage.getItem("shopcart") != null
+      && window.localStorage.getItem("shopcart").length > 1
+      ? JSON.parse(window.localStorage.getItem("shopcart")) : [];
+
+      // 建立購物車內的 id array 來檢查產品是否重複
+      let idArr = [];
+      for (let i in shopcart) {
+        idArr.push(shopcart[i].id);
+      }
+
+      if (!idArr.includes(product.id)) {
+        shopcart.push({id: product.id, name: product.name, price: product.amount, amount: 1});
+      }
+      // 將新增的商品放入 localStorage 中
+      window.localStorage.setItem("shopcart", JSON.stringify(shopcart))
+      // 顯示購買數量在購物車的 icon 上
+      $("#shopcart").html(`<i class="fas fa-shopping-cart"></i>&nbsp;購物車(${shopcart.length})`);
+      alert("商品已新增至購物車！")
+    }
   </script>
 
 </body>

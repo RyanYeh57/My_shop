@@ -11,9 +11,9 @@
   <section class="container">
       <h2 class="title is-3 has-text-centered mt-5">商品管理</h2>
       <div class="block has-text-right">
-      <button class="button js-modal-trigger is-medium is-link" data-target="modal">
+      <!-- <button class="button js-modal-trigger is-medium is-link" data-target="modal">
         新增商品
-      </button>
+      </button> -->
     </div>
         <table class="table is-bordered is-fullwidth">
           <thead>
@@ -32,7 +32,7 @@
         </table>
       </div>
 
-      <!-- model -->
+      <!-- 新增商品 model -->
       <div id="modal" class="modal">
         <div class="modal-background"></div>
         <div class="modal-card">
@@ -120,9 +120,96 @@
             <button class="button" id="cancel">取消</button>
           </footer>
         </div>
-      
-        <button class="modal-close is-large" aria-label="close"></button>
 
+        <!-- 修改商品 modal
+        <div id="modalEdit" class="modalEdit">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="title is-3 modal-card-title has-text-centered ">新增商品</p>
+              <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+              <form class="form">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" >商品名稱：</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                        <input class="input" type="text" id="edName">
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" >商品敘述：</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                        <input class="input" type="text" id="edDesc">
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" >商品價格：</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                        <input class="input" type="text" id="edPrice">
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" >庫存數量：</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                        <input class="input" type="text" id="edInventory">
+                    </div>
+                  </div>
+                </div>
+                <div id="file" class="file has-name">
+                  <label class="file-label">
+                    <input class="file-input" type="file" name="edImage">
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                      </span>
+                      <span class="file-label">
+                        上傳商品圖片
+                      </span>
+                    </span>
+                    <span class="file-name">
+                      No file uploaded
+                    </span>
+                  </label>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" >商品狀態：</label>
+                  </div>
+                  <div class="field is-narrow">
+                    <div class="control">
+                      <div class="select  is-fullwidth">
+                        <select id="edStatus">
+                          <option value="A">上架</option>
+                          <option value="S">下架</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-success" id="editProduct">修改</button>
+              <button class="button" id="cancel">取消</button>
+            </footer>
+          </div> -->
+  
     
   </section>
   <script>
@@ -151,7 +238,7 @@
                         : "N/A"}
                     </th>
                     <th>${"A" === productList[i].status ? "上架中" : "已下架"}</th>
-                    <th><button id="showMod-${productList[i].id}" class="button is-primary" data-toggle="modal" data-target="#modifyModal">修改</button></th>
+                    <th><button id="showMod-${productList[i].id}" class="button  is-primary js-modal-trigger"  data-target="modal">修改</button></th>
                     <th><button id="delete-${productList[i].id}" class="button is-danger">刪除</button></th>
                     </tr>`
               )}
@@ -159,15 +246,18 @@
           } else {
                 alert("查無商品資料！")
           }
+          for (let i = 0; i < productList.length; i++){
+            $(`#showMod-${productList[i].id}`).on('click', () => {showModifyModal(JSON.stringify(productList[i]))});
+            $(`#delete-${productList[i].id}`).on('click', () => {deleteProduct(JSON.stringify(productList[i]))});
+          }
         })
         .catch((error) => {
           alert("系統發生錯誤，請洽管理員。");
           location.reload();
         })
-        $('#products').DataTable({"info": false})
     })
 
-    // bulma 內建 modal js
+    // bulma 內建 modal js (新增產品)
     document.addEventListener('DOMContentLoaded', () => {
       // Functions to open and close a modal
       function openModal($el) {
@@ -257,6 +347,47 @@
       })
     }
 
+    // 修改商品 
+    // 代入欲修改產品資料
+    function showModifyModal(product) {
+      product = JSON.parse(product);
+      $('#edname').val(product.name);
+      $('#eddesc').val(product.description);
+      $('#edprice').val(product.amount);
+      $('#edinventory').val(product.inventory);
+      $('#edstatus').val(product.status);
+      selectedId = product.id;
+    }
+    // 修改產品並送出
+    $('#editProduct').click((evt) => {
+      evt.preventDefault();
+      editSubmit();
+    })
+    function editSubmit() {
+      let formdata = new Formdata()
+
+      formdata.append('id', selectedId);
+      formdata.append('name', $('#edname').val());
+      formdata.append('desc', $('#eddesc').val());
+      formdata.append('amount', $('#edprice').val());
+      formdata.append('inventory', $('#edinventory').val());
+      formdata.append('status',$('#edstatus').val());
+      formdata.append('img', file);
+
+      axios.put(`/api/product/${selectId}`,  formdata, { headers: {'Content-Type': 'multipart/form-data' }})
+      .then((res) => {
+        console.log(res);
+        if (res === 200) {
+          alert("修改成功!")
+          location.reload()
+        } else {
+          alert("修改失敗!")
+        }
+      }).catch((error) => {
+        alert("系統發生錯誤，請洽管理員。");
+        location.reload();
+      })
+    }
   </script>
 </body>
 </html>

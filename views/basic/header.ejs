@@ -44,7 +44,7 @@
         </div>
       </div>
         <div class="navbar-item">
-          <a class="navbar-item" href="/shopcart"><i class="fas fa-shopping-cart"></i>&nbsp;購物車</a>
+          <a class="navbar-item" href="/shopcart" id="shopcart"><i class="fas fa-shopping-cart"></i>&nbsp;購物車</a>
         </div>
         <div class="navbar-item">
           <div class="buttons">
@@ -61,11 +61,10 @@
     // 先檢查是否有 會員登入的 cookie
     $(document).ready(function init() {
       let cust = null;
-      if (getCookie("custAccount")) {
-        localStorage.removeItem();
-        console.log('hi') // 清空
+      if (!localStorage.getItem("custAccount")) {
+        localStorage.removeItem("custAccount");
       } else {
-        cust = localStorage.getItem("custAccount");
+        cust = window.localStorage.getItem("custAccount");
       }
       cust = JSON.parse(cust) // 從字串轉換回 JSON
       console.log(cust);
