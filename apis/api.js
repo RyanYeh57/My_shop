@@ -228,6 +228,34 @@ router.route("/product/:id")
   )
 }
 )
-
+// 刪除產品
+router.route("/product/:id")
+.delete((req, res) =>{
+  let id = req.params.id;
+  mysqlDb.query(
+    "DELETE FROM product WHERE id = ?;",
+    [id],
+    (err, result) => {
+      if (err) {
+        res.status(400).json();
+      } else {
+        Mongoclient.connect(url, (err, client) =>{
+          let db = client.db('products');
+          let image = db.collection('image');
+          image.deleteOne(
+            {id:Number(id)},
+            (err, response) => {
+              if (err) {
+                res.status(400).json();
+              } else {
+                res.status(200).json();
+              }
+            }
+          ) 
+        })
+      }
+    }
+  )
+})
 
 module.exports = router;

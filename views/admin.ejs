@@ -120,9 +120,10 @@
             <button class="button" id="cancel">取消</button>
           </footer>
         </div>
+      </div>
 
-        <!-- 修改商品 modal
-        <div id="modalEdit" class="modalEdit">
+        <!-- 修改商品 modal -->
+        <div id="modal" class="modal">
           <div class="modal-background"></div>
           <div class="modal-card">
             <header class="modal-card-head">
@@ -208,7 +209,8 @@
               <button class="button is-success" id="editProduct">修改</button>
               <button class="button" id="cancel">取消</button>
             </footer>
-          </div> -->
+          </div>
+        </div>
   
     
   </section>
@@ -238,10 +240,11 @@
                         : "N/A"}
                     </th>
                     <th>${"A" === productList[i].status ? "上架中" : "已下架"}</th>
-                    <th><button id="showMod-${productList[i].id}" class="button  is-primary js-modal-trigger"  data-target="modal">修改</button></th>
+                    <th><button id="showMod-${productList[i].id}" class="button is-primary js-modal-trigger"  data-target="modal">修改</button></th>
                     <th><button id="delete-${productList[i].id}" class="button is-danger">刪除</button></th>
                     </tr>`
-              )}
+              )
+            }
             $('#products-content').html(html)
           } else {
                 alert("查無商品資料！")
@@ -250,6 +253,7 @@
             $(`#showMod-${productList[i].id}`).on('click', () => {showModifyModal(JSON.stringify(productList[i]))});
             $(`#delete-${productList[i].id}`).on('click', () => {deleteProduct(JSON.stringify(productList[i]))});
           }
+          
         })
         .catch((error) => {
           alert("系統發生錯誤，請洽管理員。");
@@ -386,6 +390,22 @@
       }).catch((error) => {
         alert("系統發生錯誤，請洽管理員。");
         location.reload();
+      })
+    }
+    // 刪除產品
+    function deleteProduct(product) {
+      product = JSON.parse(product);
+      axios.delete(`/api/product/${product.id}`)
+      .then((res) => {
+        if (res.status === 200) {
+          alert("刪除成功!");
+          location.reload()
+        } else {
+          alert("刪除失敗!")
+        }
+      })
+      .catch((err) => {
+        alert("系統錯誤!")
       })
     }
   </script>

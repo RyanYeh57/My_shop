@@ -36,14 +36,14 @@
 
                       <div class="card-content">
                         <div class="media">
-                          <div class="media-content">
-                            <p class="title is-4">${productList[i].name}</p>
-                            <p class="subtitle is-6">${productList[i].description}</p>
+                          <div class="media-content has-text-centered">
+                            <p class="title is-2">${productList[i].name}</p>
+                            <p class="subtitle is-6 mt-3">${productList[i].description}</p>
                           </div>
                         </div>
                 
                       <div class="content">
-                        <p class="has-text-danger has-text-weight-bold">售價： ${productList[i].amount} 元</p>
+                        <p class="is-size-2 has-text-centered has-text-danger has-text-weight-bold">售價： ${productList[i].amount} 元</p>
                         ${productList[i].inventory > 0 ? 
                         `<button class="button is-link" id="buy-${productList[i].id}">立即搶購</button>` : 
                         `<button class="button has-background-light" title="Disabled button" disabled>補貨中</button>` 
