@@ -44,7 +44,7 @@
         </div>
       </div>
         <div class="navbar-item">
-          <a class="navbar-item" href="/shopcart" id="shopcart"><i class="fas fa-shopping-cart"></i>&nbsp;購物車</a>
+          <a class="navbar-item" href="/shopcart" id="shopcart"><i class="fas fa-shopping-cart"></i>&nbsp;購物車(0)</a>
         </div>
         <div class="navbar-item">
           <div class="buttons">
@@ -61,7 +61,7 @@
     // 先檢查是否有 會員登入的 cookie
     $(document).ready(function init() {
       let cust = null;
-      if (!localStorage.getItem("custAccount")) {
+      if (!getCookie("custAccount")) {
         localStorage.removeItem("custAccount");
       } else {
         cust = window.localStorage.getItem("custAccount");
@@ -81,9 +81,17 @@
       } else {
         $('#user').hide()
       }
+      let shopcart = localStorage.getItem("shopcart");
+      if ( shopcart !== null) {
+        if (shopcart) {
+          shopcart = JSON.parse(shopcart);
+          console.log(shopcart)
+          $('#shopcart').html(`<i class="fas fa-shopping-cart"></i>&nbsp;購物車(${shopcart.length})`)
+        }
+      }
     })
     // 解析 cookie
-    function getCookie() {
+    function getCookie(name) {
       // 例如 custaccount=.... 是否存在
       let nameEq = name + "=";
       // 因 cookie 資料為字串形式, 各項資料以;做分割

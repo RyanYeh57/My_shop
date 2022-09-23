@@ -63,6 +63,7 @@
           for (let i = 0; i < productList.length; i++) {
             $(`#buy-${productList[i].id}`).click((evt) => {
               evt.preventDefault();
+              // console.log(JSON.parse(JSON.stringify(productList[i])))
               buyProduct(JSON.stringify(productList[i]))
             })
           }   

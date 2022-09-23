@@ -49,6 +49,7 @@
   <script>
     // 登入
     $('#login').on('click',() => {
+
       log_in();
     })
 
@@ -62,6 +63,7 @@
         if(res.status === 200) {
           // 登入成功時, 將回傳的會員資料存入 localstorage 並將用戶導至首頁
           setInfo("custAccount", JSON.stringify(res.data.custAccount))
+          console.log(localStorage.getItem("custAccount"));
           window.location.href = "/index";
         }
       })
@@ -86,7 +88,7 @@
         expires = "; expires=" + date.toUTCString();
       }
       // 將設置好的資訊存回 cookie 中
-      document.cookie = name + "=" + escape(value) + expires + "; path=/";   
+      document.cookie = key + "=" + escape(value) + expires + "; path=/";   
     }
     
   </script>

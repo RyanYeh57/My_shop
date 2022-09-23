@@ -26,13 +26,13 @@
             <tbody class="products-content"></tbody>
           </table>
           <hr>
-          <h5 class="title is-5 has-text-right $weight-semibold">總計：<span>0</span>元</h5>
+          <h5 class="title is-5 has-text-right $weight-semibold">總計：<span id="total">0</span>元</h5>
           <div class="has-text-right">
-            <button class="button is-large is-danger">填寫訂單去</button>
+            <button id="changePage" class="button is-large is-danger">填寫訂單去</button>
           </div>
         </div>
         <!-- Page2 -->
-        <!-- <div id="Page2" class="column is-half is-offset-one-quarter is-left has-text-centered">
+        <div id="Page2" class="column is-half is-offset-one-quarter is-left has-text-centered">
           <form class="form">
             <h1 class="title">訂單資料</h1>
             <div class="field is-horizontal">
@@ -93,48 +93,119 @@
               <button id="submitOrder" class="button is-danger is-large">結帳去</button>
             </div>
           </form>
-        </div> -->
+        </div>
 
       </div>
     </section>
   <script>
     let productList;
     $(document).ready(function init() {
-      productList = localStorage.getItem("shopcart") !== undefined
-      && localStorage.getItem("shopcart") !== null
-      && localStorage.getItem("shopcart") > 1 
-      ? JSON.parse(localStorage.getItem("shopcart")) : [];
-
-      let tatal = 0;
+      $('#page1').show()
+      $('#page2').hide()
+      if (localStorage.getItem("shopcart") != null && localStorage.getItem("shopcart") != undefined) {
+        productList = localStorage.getItem("shopcart") 
+      } else {
+        productList = []
+      }
+      productList = JSON.parse(productList)
+      let total = 0;
+      let sum = 0;
       let html = "";
 
-      $('#submitOrder').on('click', () => {
-        alert("購買成功!再去看看其他商品吧!");
-        localStorage.setItem("shopcart", "");
-        window.location.href("/index")
-      })
-
-      if (productList !== []) {
+      if (productList.length > 0) {
         for (let i = 0; i < productList.length; i++) {
-          tatal = productList[i].price * productList[i].amount
+          total = productList[i].price * productList[i].amount
           html += (
             `<tr id="content-${productList[i].id}">
               <th>${productList[i].name}</th>
               <th id="price-${productList[i].id}">${productList[i].price}</th>
               <th>
-                <button class="button" id="minus-${productList[i].id}">-</button>
-                <span id="count-${productList[i].id}">${productList[i].amount}</span>
-                <button class="button" id="plus-${productList[i].id}">+</button>
+                <button class="button is-small" id="minus-${productList[i].id}">-</button>
+                &nbsp;<span class="mt-4" id="count-${productList[i].id}">${productList[i].amount}</span>&nbsp;
+                <button class="button is-small" id="plus-${productList[i].id}">+</button>
               </th>
               <th id="sumAmount${productList[i].id}">${total}</th>
               <th><button class="button" id="delete-${productList[i].id}">刪除</button></th>
              </tr>
             `
-          )
+            )
+          sum = sum + total;
         }
+        
         $('.products-content').html(html);
+        $('#total').text(sum)
+        // 各功能按鈕的事件
+        for(let i = 0; i < productList.length; i++) {
+          // 增加
+          $(`#plus-${productList[i].id}`).on('click',(evt)=>{
+            plus(evt, productList[i]);
+          });
+          // 減少
+          $(`#minus-${productList[i].id}`).on('click',(evt)=>{
+            minus(evt, productList[i]);
+          });
+          $(`#delete-${productList[i].id}`).on('click',(evt)=>{
+            deleteCartpd(evt, productList[i]);
+          });
+        }
+        
+      } else {
+        alert('購物車空空的，快回首頁購物吧!')
+        $('#changePage').addClass(disabled)
       }
     })
+    // 購買成功
+    $('#submitOrder').on('click', () => {
+      alert("購買成功!再去看看其他商品吧!");
+      localStorage.setItem("shopcart", "");
+      window.location.href("/index")
+    })
+    // 增加商品數量
+    function plus(evt, product) {
+      let price = product.price;
+      let amount = product.amount + 1;
+      let total = price * amount;
+      $(`#count-${product.id}`).text(amount)
+      $(`#sumAmount${product.id}`).text(total)
+      product.amount = amount
+      localStorage.setItem("shopcart", JSON.stringify(product)) 
+      getProductTotal(price);
+    }
+    // 減少商品數量
+    function minus(evt, product) {
+      if (product.amount != 0) {
+        let price = product.price;
+        let amount = product.amount - 1;
+        let total = price * amount;
+        $(`#count-${product.id}`).text(amount)
+        $(`#sumAmount${product.id}`).text(total)
+        product.amount = amount
+        localStorage.setItem("shopcart", JSON.stringify(product)) 
+        getProductTotal(-price);
+      }
+    }
+    // 刪除商品
+    function deleteCartpd(evt, product) {
+      if (confirm('確定要刪除嗎?')){
+        let price = product.price;
+        let amount = product.amount;
+        let total = price * amount;
+        let pd = JSON.parse(localStorage.getItem("shopcart"));
+        // 用 filter 使用新的 array 取代先前的
+        let newProductList = pd.filter((item) => {return item.id !== product.id})
+        localStorage.setItem("shopcart", JSON.stringify(newProductList));
+        $("#shopcart").html(`<i class="fas fa-shopping-cart"></i>&nbsp;購物車(${newProductList.length})`);
+        $(`#content-${product.id}`).remove();
+        getProductTotal(-total)
+        if (newProductList.length === 0) alert('購物車空空的，快回首頁購物吧!')
+      }
+    }
+    // 計算總和
+    function getProductTotal(price) {
+      let sum = (Number)($('#total').text());
+      $('#total').text(sum + price);
+    }
+
   </script>
 </body>
 </html>
