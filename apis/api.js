@@ -128,7 +128,7 @@ router.route("/submitOrder")
   let data = req.body;
   mysqlDb.query(
     "INSERT INTO shop_order (cust_id, cust_name, phone, address, status, total) VALUES (?, ?, ?, ?, ?, ?);",
-    [data.custAccount.id, data.order.name, data.order.phone, data.order.address, 1, data.order.tatal],
+    [data.custAccount.id, data.order.name, data.order.phone, data.order.address, 1, data.order.total],
     (err, result) => {
       if (err) {
         res.status(400).json({message:"mysql error"});

@@ -22,8 +22,60 @@
           <th>訂單狀態</th>
         </tr>
       </thead>
-      <tbody class="products-content has-text-centered"></tbody>
+      <tbody  class="products-content has-text-centered">
+
+      </tbody>
     </table>
   </section>
+  <script>
+    $(document).ready(function init() {
+      let html = "";
+      if (localStorage.getItem("custAccount") !== null && localStorage.getItem("custAccount") !== undefined) {
+        let cust = JSON.parse(localStorage.getItem("custAccount"))
+        axios.get(`/api/histroy/${cust.id}`)
+        .then((res) => {
+          if (res.status === 200){
+            
+            let result = res.data.result;
+            for (let i = 0; i < result.length; i++) {
+              html += (
+                `<tr>
+                    <th>${result[i].id}</th>
+                    <th>${result[i].cust_name}</th>
+                    <th>${result[i].phone}</th>
+                    <th>${result[i].address}</th>
+                    <th>${dateString(result[i].create_date)}</th>
+                    <th>${result[i].total}元</th>
+                    <th>${"1" === result[i].status ? "待出貨" : "已出貨"}</th>
+                </tr>`
+              )
+            }
+          } else {
+            alert("查無訂單紀錄")
+          }
+          console.log("hi")
+          $('.products-content').html(html);
+        })
+        .catch((error) => {
+          alert(error);
+          // location.href = "/index"
+        })
+      } else {
+        alert("請先登入會員!")
+        location.href = "/index"
+      }
+    })
+
+    function dateString(create_date) {
+      let date = new Date(create_date);
+      return dateStr =
+        date.getFullYear() + "/" +
+        ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
+        ("00" + date.getDate()).slice(-2) + " " +
+        ("00" + date.getHours()).slice(-2) + ":" +
+        ("00" + date.getMinutes()).slice(-2) + ":" +
+        ("00" + date.getSeconds()).slice(-2);
+    }
+  </script>
 </body>
 </html>

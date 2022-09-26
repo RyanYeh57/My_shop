@@ -9,9 +9,9 @@
 <body>
   <%- include("./basic/header.ejs") %>
     <section class="container">
-      <div class="columns">
+      <div class="columns is-multiline ">
         <!-- Page1 -->
-        <div id="Page1" class="column has-text-centered is-12 is-multiline">
+        <div id="Page1" class="column has-text-centered is-12 ">
           <h1 class="title mt-5">購物車</h1>
           <table class="table is-bordered is-fullwidth">
             <thead>
@@ -29,19 +29,20 @@
           <h5 class="title is-5 has-text-right $weight-semibold">總計：<span id="total">0</span>元</h5>
           <div class="has-text-right">
             <button id="changePage" class="button is-large is-danger">填寫訂單去</button>
+            <button class="button has-background-light is-large" id="disabled" disabled>回去採購吧</button>
           </div>
         </div>
         <!-- Page2 -->
-        <div id="Page2" class="column is-half is-offset-one-quarter is-left has-text-centered">
+        <div id="Page2" class="column is-half is-offset-one-quarter is-left has-text-centered is-hidden">
           <form class="form">
-            <h1 class="title">訂單資料</h1>
+            <h1 class="title mt-5">訂單資料</h1>
             <div class="field is-horizontal">
               <div class="field-label is-normal">
                 <label class="label" >收件人姓名：</label>
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="text">
+                    <input class="input" type="text" id="orderName">
                 </div>
               </div>
             </div>
@@ -51,7 +52,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="text">
+                    <input class="input" type="text" id="orderPhone">
                 </div>
               </div>
             </div>
@@ -61,7 +62,7 @@
               </div>
               <div class="field-body">
                 <div class="field">
-                    <input class="input" type="text">
+                    <input class="input" type="text" id="orderAddress">
                 </div>
               </div>
             </div>
@@ -69,9 +70,9 @@
               <div class="field-label is-normal">
                 <label class="label" >結帳金額：</label>
               </div>
-              <div class="field-body is-size-3">
-                <div class="field ">
-                    20000元
+              <div class="field-body is-size-4 has-text-danger">
+                <div class="field">
+                    <span id="sum">0</span>元
                 </div>
               </div>
             </div>
@@ -91,23 +92,24 @@
             <hr>
             <div class="has-text-right">
               <button id="submitOrder" class="button is-danger is-large">結帳去</button>
+              <button id="loginFirst" class="button is-large is-hidden" disabled>請先登入會員</button>
             </div>
           </form>
         </div>
-
       </div>
     </section>
+
   <script>
     let productList;
     $(document).ready(function init() {
-      $('#page1').show()
-      $('#page2').hide()
+      $('#disabled').hide()
       if (localStorage.getItem("shopcart") != null && localStorage.getItem("shopcart") != undefined) {
         productList = localStorage.getItem("shopcart") 
+        productList = JSON.parse(productList)
       } else {
         productList = []
       }
-      productList = JSON.parse(productList)
+      
       let total = 0;
       let sum = 0;
       let html = "";
@@ -129,9 +131,9 @@
              </tr>
             `
             )
+          // 計算一開始的總和
           sum = sum + total;
         }
-        
         $('.products-content').html(html);
         $('#total').text(sum)
         // 各功能按鈕的事件
@@ -144,22 +146,29 @@
           $(`#minus-${productList[i].id}`).on('click',(evt)=>{
             minus(evt, productList[i]);
           });
+          // 刪除
           $(`#delete-${productList[i].id}`).on('click',(evt)=>{
             deleteCartpd(evt, productList[i]);
           });
         }
-        
       } else {
         alert('購物車空空的，快回首頁購物吧!')
-        $('#changePage').addClass(disabled)
+        $('#changePage').hide();
+        $('#disabled').show();
       }
     })
-    // 購買成功
-    $('#submitOrder').on('click', () => {
-      alert("購買成功!再去看看其他商品吧!");
-      localStorage.setItem("shopcart", "");
-      window.location.href("/index")
+    // 切換頁面
+    $('#changePage').on('click', (evt) => {
+      evt.preventDefault();
+      $('#Page1').toggleClass("is-hidden");
+      $('#Page2').removeClass("is-hidden");
+      $('#sum').text(Number($('#total').text()));
+      if (window.localStorage.getItem("custAccount")===null) {
+        $('#submitOrder').hide();
+        $('#loginFirst').removeClass("is-hidden");
+      } 
     })
+
     // 增加商品數量
     function plus(evt, product) {
       let price = product.price;
@@ -168,9 +177,10 @@
       $(`#count-${product.id}`).text(amount)
       $(`#sumAmount${product.id}`).text(total)
       product.amount = amount
-      localStorage.setItem("shopcart", JSON.stringify(product)) 
+      localStorage.setItem("shopcart", JSON.stringify(productList)) 
       getProductTotal(price);
     }
+
     // 減少商品數量
     function minus(evt, product) {
       if (product.amount != 0) {
@@ -180,10 +190,11 @@
         $(`#count-${product.id}`).text(amount)
         $(`#sumAmount${product.id}`).text(total)
         product.amount = amount
-        localStorage.setItem("shopcart", JSON.stringify(product)) 
+        localStorage.setItem("shopcart", JSON.stringify(productList)) 
         getProductTotal(-price);
       }
     }
+
     // 刪除商品
     function deleteCartpd(evt, product) {
       if (confirm('確定要刪除嗎?')){
@@ -197,15 +208,45 @@
         $("#shopcart").html(`<i class="fas fa-shopping-cart"></i>&nbsp;購物車(${newProductList.length})`);
         $(`#content-${product.id}`).remove();
         getProductTotal(-total)
-        if (newProductList.length === 0) alert('購物車空空的，快回首頁購物吧!')
+        if (newProductList.length === 0) {
+          alert('購物車空空的，快回首頁購物吧!')
+          $('#changePage').hide();
+          $('#disabled').show()
+        }
       }
     }
+
     // 計算總和
     function getProductTotal(price) {
       let sum = (Number)($('#total').text());
       $('#total').text(sum + price);
     }
 
+    // 結帳
+    $('#submitOrder').on('click', (evt) => {
+      evt.preventDefault();
+      let custAccount = JSON.parse(localStorage.getItem("custAccount"))
+      let order = {
+        name: $('#orderName').val(),
+        phone: $('#orderPhone').val(),
+        address: $('#orderAddress').val(),
+        total: $('#sum').text(),
+        payment: $('input[name="payment"]:checked').val()
+      }
+      console.log(custAccount)
+      axios.post('/api/submitOrder', {custAccount:custAccount, order:order})
+      .then((res) => {
+        if (res.status === 201) {
+          alert("交易成功");
+          localStorage.removeItem("shopcart")
+          window.location.href = "/index";
+        }
+      })
+      .catch((error) => {
+        alert(error)
+        location.reload();
+      })
+    })
   </script>
 </body>
 </html>
