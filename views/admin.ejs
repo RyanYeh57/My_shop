@@ -11,9 +11,6 @@
   <section class="container">
       <h2 class="title is-3 has-text-centered mt-5">商品管理</h2>
       <div class="block has-text-right">
-      <button class="button js-modal-trigger is-medium is-link" data-target="modal">
-        新增商品
-      </button>
     </div>
         <table class="table is-bordered is-fullwidth">
           <thead>
@@ -31,14 +28,20 @@
           <tbody id="products-content"></tbody>
         </table>
       </div>
+      <div class="has-text-right">
+        <button class="button js-modal-trigger is-medium is-link " data-target="modal" id="btn">
+        新增商品
+        </button> 
+      </div>
+   
 
       <!-- 新增商品 model -->
-      <div id="modal" class="modal">
+      <div id="modal1" class="modal">
         <div class="modal-background"></div>
         <div class="modal-card">
           <header class="modal-card-head">
             <p class="title is-3 modal-card-title has-text-centered ">新增商品</p>
-            <button class="delete" aria-label="close"></button>
+            <button class="delete" aria-label="close" data-bulma-modal="close"></button>
           </header>
           <section class="modal-card-body">
             <form class="form">
@@ -117,18 +120,18 @@
           </section>
           <footer class="modal-card-foot">
             <button class="button is-success" id="addProduct">新增</button>
-            <button class="button" id="cancel">取消</button>
+            <button class="button" data-bulma-modal="close">取消</button>
           </footer>
         </div>
       </div>
 
-        <!-- 修改商品 modal -->
-        <!-- <div id="modal" class="modal">
+      <!-- 修改商品 modal -->
+      <div id="modal2" class="modal">
           <div class="modal-background"></div>
           <div class="modal-card">
             <header class="modal-card-head">
-              <p class="title is-3 modal-card-title has-text-centered ">新增商品</p>
-              <button class="delete" aria-label="close"></button>
+              <p class="title is-3 modal-card-title has-text-centered ">修改商品</p>
+              <button class="delete" aria-label="close" data-bulma-modal="close"></button>
             </header>
             <section class="modal-card-body">
               <form class="form">
@@ -172,7 +175,7 @@
                     </div>
                   </div>
                 </div>
-                <div id="file" class="file has-name">
+                <div id="file1" class="file has-name">
                   <label class="file-label">
                     <input class="file-input" type="file" name="edImage">
                     <span class="file-cta">
@@ -207,10 +210,10 @@
             </section>
             <footer class="modal-card-foot">
               <button class="button is-success" id="editProduct">修改</button>
-              <button class="button" id="cancel">取消</button>
+              <button class="button" data-bulma-modal="close">取消</button>
             </footer>
           </div>
-        </div> -->
+        </div>
   
     
   </section>
@@ -250,7 +253,17 @@
                 alert("查無商品資料！")
           }
           for (let i = 0; i < productList.length; i++){
-            $(`#showMod-${productList[i].id}`).on('click', () => {showModifyModal(JSON.stringify(productList[i]))});
+            btn2 = document.querySelector(`#showMod-${productList[i].id}`)  
+            md2 = new BulmaModal("#modal2")
+
+            btn2.addEventListener("click", function () {
+              md2.show()
+              showModifyModal(JSON.stringify(productList[i]))
+              console.log(productList[i].id)
+            })
+
+            md2.addEventListener('modal:show')
+            md2.addEventListener("modal:close")
             $(`#delete-${productList[i].id}`).on('click', () => {deleteProduct(JSON.stringify(productList[i]))});
           }
           
@@ -261,53 +274,7 @@
         })
     })
 
-    // bulma 內建 modal js (新增產品)
-    document.addEventListener('DOMContentLoaded', () => {
-      // Functions to open and close a modal
-      function openModal($el) {
-        $el.classList.add('is-active');
-      }
-
-      function closeModal($el) {
-        $el.classList.remove('is-active');
-      }
-
-      function closeAllModals() {
-        (document.querySelectorAll('.modal') || []).forEach(($modal) => {
-          closeModal($modal);
-        });
-      }
-
-      // Add a click event on buttons to open a specific modal
-      (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
-        const modal = $trigger.dataset.target;
-        const $target = document.getElementById(modal);
-
-        $trigger.addEventListener('click', () => {
-          openModal($target);
-        });
-      });
-
-      // Add a click event on various child elements to close the parent modal
-      (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
-        const $target = $close.closest('.modal');
-
-        $close.addEventListener('click', () => {
-          closeModal($target);
-        });
-      });
-
-      // Add a keyboard event to close all modals
-      document.addEventListener('keydown', (event) => {
-        const e = event || window.event;
-
-        if (e.keyCode === 27) { // Escape key
-          closeAllModals();
-        }
-      });
-    });
-
-    // bulma 內建上傳圖片顯示
+    // bulma 內建上傳圖片顯示 (新增圖片)
     const fileInput = document.querySelector('#file input[type=file]');
     fileInput.onchange = () => {
       if (fileInput.files.length > 0) {
@@ -318,9 +285,19 @@
       return file;
     }
 
+    // bulma 內建上傳圖片顯示 (修改圖片)
+    const fileInput1 = document.querySelector('#file1 input[type=file]');
+    fileInput1.onchange = () => {
+      if (fileInput1.files.length > 0) {
+        const fileName = document.querySelector('#file1 .file-name');
+        fileName.textContent = fileInput1.files[0].name; 
+        file = fileInput1.files[0];
+      }
+      return file;
+    }
+
     // 新增商品
     $('#addProduct').click((evt) => {
-      evt.preventDefault();
       addSubmit();
     })
     function addSubmit() {
@@ -350,45 +327,41 @@
         location.reload();
       })
     }
-
     // 修改商品 
     // 代入欲修改產品資料
     function showModifyModal(product) {
       product = JSON.parse(product);
-      $('#edname').val(product.name);
-      $('#eddesc').val(product.description);
-      $('#edprice').val(product.amount);
-      $('#edinventory').val(product.inventory);
-      $('#edstatus').val(product.status);
-      selectedId = product.id;
+      $('#edName').val(product.name);
+      $('#edDesc').val(product.description);
+      $('#edPrice').val(product.amount);
+      $('#edInventory').val(product.inventory);
+      $('#edStatus').val(product.status);
+      selectId = product.id;
     }
     // 修改產品並送出
     $('#editProduct').click((evt) => {
-      evt.preventDefault();
       editSubmit();
     })
     function editSubmit() {
-      let formdata = new Formdata()
-
-      formdata.append('id', selectedId);
-      formdata.append('name', $('#edname').val());
-      formdata.append('desc', $('#eddesc').val());
-      formdata.append('amount', $('#edprice').val());
-      formdata.append('inventory', $('#edinventory').val());
-      formdata.append('status',$('#edstatus').val());
+      let formdata = new FormData();
+      formdata.append('id', selectId);
+      formdata.append('name', $('#edName').val());
+      formdata.append('desc', $('#edDesc').val());
+      formdata.append('amount', $('#edPrice').val());
+      formdata.append('inventory', $('#edInventory').val());
+      formdata.append('status',$('#edStatus').val());
       formdata.append('img', file);
 
       axios.put(`/api/product/${selectId}`,  formdata, { headers: {'Content-Type': 'multipart/form-data' }})
       .then((res) => {
-        console.log(res);
-        if (res === 200) {
+        if (res.status === 200) {
           alert("修改成功!")
           location.reload()
         } else {
           alert("修改失敗!")
         }
       }).catch((error) => {
-        alert("系統發生錯誤，請洽管理員。");
+        alert(error);
         location.reload();
       })
     }
@@ -408,6 +381,71 @@
         alert("系統錯誤!")
       })
     }
+  // 設定bulma modal
+  class BulmaModal {
+	constructor(selector) {
+		this.elem = document.querySelector(selector)
+		this.close_data()
+	}
+	
+	show() {
+		this.elem.classList.toggle('is-active')
+		this.on_show()
+	}
+	
+	close() {
+		this.elem.classList.toggle('is-active')
+		this.on_close()
+	}
+	
+	close_data() {
+		var modalClose = this.elem.querySelectorAll("[data-bulma-modal='close'], .modal-background")
+		var that = this
+		modalClose.forEach(function(e) {
+			e.addEventListener("click", function() {
+				
+				that.elem.classList.toggle('is-active')
+
+				var event = new Event('modal:close')
+
+				that.elem.dispatchEvent(event);
+			})
+		})
+	}
+	
+	on_show() {
+		var event = new Event('modal:show')
+	
+		this.elem.dispatchEvent(event);
+	}
+	
+	on_close() {
+		var event = new Event('modal:close')
+	
+		this.elem.dispatchEvent(event);
+	}
+	
+	addEventListener(event, callback) {
+		this.elem.addEventListener(event, callback)
+	}
+}
+  // 新增商品 modal
+  let btn1 = document.querySelector("#btn")
+  let mdl = new BulmaModal("#modal1")
+
+  btn1.addEventListener("click", function () {
+    mdl.show()
+  })
+
+  mdl.addEventListener('modal:show', function() {
+    console.log("opened")
+  })
+
+  mdl.addEventListener("modal:close", function() {
+    console.log("closed")
+  })
+
+
   </script>
 </body>
 </html>

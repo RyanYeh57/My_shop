@@ -1,3 +1,21 @@
-.container .field-label {
-  width: 100px; 
+.container .card .card-image{
+  border: solid 1px rgb(20, 19, 19);
+  height: 300px;
+}
+
+.container #indexTitle {
+  color: red;
+  text-shadow: 0 0 50px rgb(244, 231, 231);
+  animation: neon 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neon {
+  0%,
+  100% {
+    text-shadow: 0 0 20px rgb(224, 124, 124), 0 0 100px #fff, 0 0 20px #fff;
+  }
+  50% {
+    text-shadow: 0 0 50px #fff, 0 0 150px #fff, 0 0 50px #fff;
+    color: rgb(233, 111, 80);
+  }
 }

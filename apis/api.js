@@ -187,9 +187,9 @@ router.route("/product/:id")
   let id = req.params.id
   let data = req.body;
   let file = req.file;
-  let imageSrting;
+  let imgString;
   if (file !== undefined && file !== null) {
-    imageSrting = `data:image/gif;base64,${file.buffer.toString('base64')}`
+    imgString = `data:image/gif;base64,${file.buffer.toString('base64')}`
   }
   // 用 id 更新 Mysql 
   mysqlDb.query(
@@ -197,22 +197,21 @@ router.route("/product/:id")
     [data.name, data.desc, data.amount, data.inventory, data.status, id], 
     (err, result) => {
       if (err) {
-        console.log(err);
-        res.status(400).json()
+        res.status(400).json("1")
       } else {
         Mongoclient.connect(url, (err, client) => {
           if (err) {
-            res.status(400).json()
+            res.status(400).json("2")
           } else {
             if (imgString != null && imgString.length > 0) {
               let db = client.db("products");
               let image = db.collection("image");
               image.updateOne(
                 {"id":Number(id)},
-                {$set: {"image": imageSrting}},
+                {$set: {"image": imgString}},
                 (err, response) => {
                   if (err) {
-                    res.status(400).json();
+                    res.status(400).json("3");
                   } else {
                     res.status(200).json();
                   }
