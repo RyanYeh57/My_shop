@@ -9,7 +9,9 @@
 <body>
   <%- include("./basic/header.ejs")%>
   <section class="container">
-    <h1 class="title mt-5 has-text-centered" id="indexTitle">現正熱賣中！！</h1>
+    <div class="header has-text-centered">
+      <h1 class="title " id="indexTitle">現正熱賣中！！</h1>
+    </div>
     <div class="columns is-multiline" id="cards"> <!-- is-multiline 用來自動換行-->
     </div>
   </section>
@@ -36,18 +38,18 @@
 
                       <div class="card-content">
                         <div class="media">
-                          <div class="media-content has-text-centered">
-                            <p class="title is-3">${productList[i].name}</p>
+                          <div class="media-content ">
+                            <p class="title is-3 has-text-centered">${productList[i].name}</p>
                             <p class="subtitle is-6 mt-3">${productList[i].description}</p>
                           </div>
                         </div>
                 
                       <div class="content">
-                        <p class="is-size-3 has-text-centered ">售價：<span class="has-text-danger has-text-weight-bold"> ${productList[i].amount} </span>元</p>
-                        ${productList[i].inventory > 0 ? 
-                        `<button class="button is-link" id="buy-${productList[i].id}">立即搶購</button>` : 
+                        <p class="price is-size-4 ">售價：<span class="has-text-danger has-text-weight-bold"> ${productList[i].amount} </span>元
+                        <span id="button">${productList[i].inventory > 0 ? 
+                        `<button class="button is-danger is-small" id="buy-${productList[i].id}">立即搶購</button>` : 
                         `<button class="button has-background-light" title="Disabled button" disabled>補貨中</button>` 
-                        }                  
+                        }</span></p>                  
                       </div>
                     </div>
                   </div>

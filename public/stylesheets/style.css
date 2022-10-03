@@ -1,5 +1,12 @@
+.container {
+  background-color: aliceblue;
+  border-radius: 10px; 
+  border: 5px solid #0a5091;
+  box-shadow: 0 0 0 5px #010d16;
+  padding: 1rem;
+}
 .container .card .card-image{
-  border: solid 1px rgb(20, 19, 19);
+  /* border: solid 1px rgb(20, 19, 19); */
   height: 300px;
 }
 
@@ -7,6 +14,29 @@
   color: red;
   text-shadow: 0 0 50px rgb(244, 231, 231);
   animation: neon 1.5s ease-in-out infinite alternate;
+  font-size: 3rem;
+}
+
+.navbar {
+  margin-bottom: 50px;
+}
+.navbar #log_in {
+  background-color: blanchedalmond;
+}
+
+.card .price {
+  font-style:italic;
+}
+
+.card .button {
+  margin-left: 2em;
+  margin-top: 0.4em;
+}
+
+.container .header {
+  margin-bottom: 2em;
+  padding: 0.5em;
+  border-radius: 10px;
 }
 
 @keyframes neon {
