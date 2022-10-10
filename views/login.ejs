@@ -49,7 +49,6 @@
   <script>
     // 登入
     $('#login').on('click',() => {
-
       log_in();
     })
 
@@ -63,7 +62,6 @@
         if(res.status === 200) {
           // 登入成功時, 將回傳的會員資料存入 localstorage 並將用戶導至首頁
           setInfo("custAccount", JSON.stringify(res.data.custAccount))
-          console.log(localStorage.getItem("custAccount"));
           window.location.href = "/index";
         }
       })
@@ -72,7 +70,7 @@
         location.reload();
       })
     }
-
+    // 設定 cookie
     function setInfo(key, value) {
       localStorage.setItem(key, value);
       setCookie(key, value, 600); // 登入有效時間6分鐘

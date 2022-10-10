@@ -52,6 +52,8 @@ router.route("/products")
     }
   )
 })
+
+// 會員系統
 // 登入會員
 router.route("/login")
 .post((req, res) => {
@@ -97,6 +99,25 @@ router.route("/register")
     }
     )
 })
+// 修改會員
+router.route("/edit/:id")
+.patch((req, res) => {
+  let cust_id = req.params.id;
+  let data = req.body
+  mysqlDb.query(
+    "UPDATE custaccount SET name = ?, cellphone = ?, email = ? WHERE id = ?",
+    [data.name, data.cellphone, data.email, cust_id],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(400).json({message:"bad request!"})
+      } else {
+        res.status(200).json({message:"update successfully!"})
+      }
+    }
+    )
+})
+
 // 取得會員歷史訂單
 router.route("/histroy/:id")
 .get((req, res) => {
@@ -184,7 +205,7 @@ router.route("/product/:id")
   }
   // 用 id 更新 Mysql 
   mysqlDb.query(
-    "UPDATE product set name= ?, description = ?, amount = ?, inventory = ?, status = ? where id = ?;",
+    "UPDATE product SET name= ?, description = ?, amount = ?, inventory = ?, status = ? WHEREs id = ?;",
     [data.name, data.desc, data.amount, data.inventory, data.status, id], 
     (err, result) => {
       if (err) {

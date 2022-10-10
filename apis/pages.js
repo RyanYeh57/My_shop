@@ -19,6 +19,9 @@ router.route("/logout")
 router.route("/register")
 .get((req, res) => res.render('register.ejs'))
 
+router.route("/edit")
+.get((req, res) => res.render('edit.ejs'))
+
 router.route('/history')
 .get((req,res) => res.render('history.ejs'))
 

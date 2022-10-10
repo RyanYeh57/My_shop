@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會員資料修改</title>
+</head>
+<body>
+  <%- include("./basic/header.ejs")%>
+  <section class="container">
+    <div class="columns">
+      <div class="column is-6 is-offset-3 is-offset-3" id="column">
+        <h2 class="title mt-4 has-text-centered">會員資料修改</h2>
+        <form class="form" action="post">
+          <div class="field is-horizontal">
+            <div class="field-label is-normal ">
+              <label class="label">暱稱：</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                  <input class="input" type="text" id="name">
+              </div>
+            </div>
+          </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal ">
+                <label class="label">聯絡電話：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="text" id="phone">
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">電子信箱：</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                    <input class="input" type="email" id="email">
+                </div>
+              </div>
+            </div>
+          <div class="has-text-centered">
+            <button type="button" class="button is-primary is-medium" id="edit">
+                修改資料
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    $(document).ready(function init() {
+      cust = JSON.parse(window.localStorage.getItem("custAccount"));
+      $('#name').val(cust.name)
+      $('#phone').val(cust.cellphone)
+      $('#email').val(cust.email)
+    })
+    $('#edit').click((evt) => {
+      evt.preventDefault;
+      edit();
+    })
+
+    // 修改會員資料
+    function edit() {
+      let data = {
+        name: $('#name').val(),
+        cellphone: $('#phone').val(),
+        email: $('#email').val(),
+      };
+      axios.patch(`api/edit/${cust.id}`, data)
+        .then((res) => {
+          if (res.status === 200) {
+            alert('修改成功!請重新登入');
+            window.localStorage.removeItem("custAccount");
+            window.location.href = "/login";
+          }
+        })
+        .catch((error) => {
+          alert("修改失敗!");
+          location.reload();
+        }
+      )
+    }
+
+  </script>
+</body>
+</html>
