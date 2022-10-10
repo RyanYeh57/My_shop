@@ -4,7 +4,6 @@ const mysqlDb = require('../connection/mySqlConnetion')
 const Mongoclient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017/products'
 const multer = require('multer');
-const { response } = require('express');
 
 const upload = multer({
   limit: {
@@ -13,14 +12,6 @@ const upload = multer({
   }
 })
 
-// const btPayment = require("braintree");
-// const gateway = new braintree.BraintreeGateway({
-//   environment: braintree.Environment.Sandbox,
-//   merchantId: config.get("braintree_merchant_id"),
-//   publicKey: config.get("braintree_merchant_public_key"),
-//   privateKey: config.get("braintree_merchant_private_key")
-// });
-
 /*
 網站基本API
 */
@@ -28,7 +19,7 @@ const upload = multer({
 router.route("/products")
 .get((req, res) => {
   // mysql 取得資料
-  // 1 -> mysql 取得成功, mongodb 取得圖片資料  
+  // mysql 取得成功, mongodb 取得圖片資料  
   mysqlDb.query(
     "SELECT * FROM product;",
     (err, result) => {
@@ -122,7 +113,7 @@ router.route("/histroy/:id")
     }
     )
 })
-// 金流API
+// 交易 API
 router.route("/submitOrder")
 .post((req, res) => {
   let data = req.body;

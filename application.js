@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const pageRouter = require('./apis/pages');
 const apiRouter = require('./apis/api');
-// const session = require('express-session')
 const PORT = 3000;
 const app = express();
 
@@ -16,12 +15,6 @@ app.use(express.static(path.join(__dirname, "node_modules/bootstrap/dist")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({extended: true})); // 取代 body-parser
 app.use(express.json());
-// 使用 session
-// app.use(session({
-//   secret: "anything", 
-//   resave: false, 
-//   saveUninitialized: true, 
-// }));
 
 // 路由設定
 app.use("/", pageRouter); // 前端頁面設定

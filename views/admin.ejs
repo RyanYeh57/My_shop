@@ -9,7 +9,7 @@
 <body>
   <%- include("./basic/header.ejs")%>
   <section class="container">
-      <h2 class="title is-3 has-text-centered mt-5">商品管理</h2>
+      <h2 class="title is-3 has-text-centered mt-4">商品管理</h2>
       <div class="block has-text-right">
     </div>
         <table class="table is-bordered is-fullwidth">
@@ -223,6 +223,7 @@
 
     // 初始化時將商品資料從資料庫取出，並將它儲存到 productList
     $(document).ready(
+      
       function init() {
         axios.get('/api/products')
         .then((res) => {
@@ -368,18 +369,20 @@
     // 刪除產品
     function deleteProduct(product) {
       product = JSON.parse(product);
-      axios.delete(`/api/product/${product.id}`)
-      .then((res) => {
-        if (res.status === 200) {
-          alert("刪除成功!");
-          location.reload()
-        } else {
-          alert("刪除失敗!")
-        }
-      })
-      .catch((err) => {
-        alert("系統錯誤!")
-      })
+      if (confirm("確定刪除產品?!")){
+        axios.delete(`/api/product/${product.id}`)
+        .then((res) => {
+          if (res.status === 200) {
+            alert("刪除成功!");
+            location.reload()
+          } else {
+            alert("刪除失敗!")
+          }
+        })
+        .catch((err) => {
+          alert("系統錯誤!")
+        })
+      }
     }
   // 設定bulma modal
   class BulmaModal {

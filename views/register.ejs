@@ -10,8 +10,8 @@
   <%- include("./basic/header.ejs")%>
   <section class="container">
     <div class="columns">
-      <div class="column is-6 is-offset-3 is-offset-3">
-        <h2 class="title mt-5 has-text-centered">會員註冊</h2>
+      <div class="column is-6 is-offset-3 is-offset-3" id="column">
+        <h2 class="title mt-4 has-text-centered">會員註冊</h2>
         <form class="form" action="post">
           <div class="field is-horizontal">
             <div class="field-label is-normal">
@@ -111,7 +111,7 @@
         };
         axios.post("api/register", data)
           .then((res) => {
-            if (res.status === 200) {
+            if (res.status === 201) {
               alert('註冊成功!');
               window.location.href = "/login";
             }

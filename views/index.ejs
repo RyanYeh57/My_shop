@@ -8,9 +8,9 @@
 </head>
 <body>
   <%- include("./basic/header.ejs")%>
-  <section class="container">
-    <div class="header has-text-centered">
-      <h1 class="title " id="indexTitle">現正熱賣中！！</h1>
+  <section class="container" id="index">
+    <div class="header">
+      <h1 class="title " id="indexTitle">現正熱賣中&nbsp;<i class="fas fa-fire-alt"></i></h1>
     </div>
     <div class="columns is-multiline" id="cards"> <!-- is-multiline 用來自動換行-->
     </div>
@@ -29,7 +29,7 @@
             for (let i = 0; i < productList.length; i++) {
               html += (
                 `<div class="column is-one-quarter">
-                  <div class="card">
+                  <div class="card is-borderless">
                       <div class="card-image">
                         <figure class="image p-5">
                           <img src=${productList[i].img} alt="Placeholder image">
@@ -39,15 +39,15 @@
                       <div class="card-content">
                         <div class="media">
                           <div class="media-content ">
-                            <p class="title is-3 has-text-centered">${productList[i].name}</p>
-                            <p class="subtitle is-6 mt-3">${productList[i].description}</p>
+                            <p class="title is-3 has-text-centered"></p>
+                            <p class="subtitle is-6 mt-3"><span id="name">【${productList[i].name}】</span>${productList[i].description}</p>
                           </div>
                         </div>
                 
                       <div class="content">
                         <p class="price is-size-4 ">售價：<span class="has-text-danger has-text-weight-bold"> ${productList[i].amount} </span>元
                         <span id="button">${productList[i].inventory > 0 ? 
-                        `<button class="button is-danger is-small" id="buy-${productList[i].id}">立即搶購</button>` : 
+                        `<button class="button is-danger is-small is-rounded" id="buy-${productList[i].id}">立即搶購</button>` : 
                         `<button class="button has-background-light" title="Disabled button" disabled>補貨中</button>` 
                         }</span></p>                  
                       </div>
