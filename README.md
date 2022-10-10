@@ -19,11 +19,11 @@
 ### 刪除商品
 ![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E5%88%AA%E9%99%A4%E5%95%86%E5%93%81.png)
 ### 購物車
-![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E5%88%AA%E9%99%A4%E5%95%86%E5%93%81.png)
+![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E8%B3%BC%E7%89%A9%E8%BB%8A.png)
 ### 填寫訂單
-![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E5%88%AA%E9%99%A4%E5%95%86%E5%93%81.png)
+![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E5%A1%AB%E5%AF%AB%E8%A8%82%E5%96%AE.png)
 ### 訂單紀錄
-![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E5%88%AA%E9%99%A4%E5%95%86%E5%93%81.png)
+![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E8%A8%82%E5%96%AE%E7%B4%80%E9%8C%84.png)
 
 
 ## 使用技術
