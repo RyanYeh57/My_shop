@@ -13,8 +13,8 @@
         <!-- Page1 -->
         <div id="Page1" class="column has-text-centered is-12" >
           <h1 class="title mt-4">購物車</h1>
-          <table class="table is-bordered is-fullwidth">
-            <thead>
+          <table class="table is-bordered is-fullwidth is-striped">
+            <thead class="thead">
               <tr>
                 <th>商品名稱</th>
                 <th>單價</th>
@@ -122,12 +122,12 @@
               <th>${productList[i].name}</th>
               <th id="price-${productList[i].id}">${productList[i].price}</th>
               <th>
-                <button class="button is-small" id="minus-${productList[i].id}">-</button>
+                <button class="button is-small" id="minus-${productList[i].id}">▼</button>
                 &nbsp;<span class="mt-4" id="count-${productList[i].id}">${productList[i].amount}</span>&nbsp;
-                <button class="button is-small" id="plus-${productList[i].id}">+</button>
+                <button class="button is-small" id="plus-${productList[i].id}">▲</button>
               </th>
               <th id="sumAmount${productList[i].id}">${total}</th>
-              <th><button class="button" id="delete-${productList[i].id}">刪除</button></th>
+              <th><button class="button is-danger" id="delete-${productList[i].id}">刪除</button></th>
              </tr>
             `
             )
