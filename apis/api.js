@@ -3,17 +3,7 @@ const router = express.Router();
 const mysqlDb = require('../connection/mySqlConnetion')
 const Mongoclient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017/products'
-<<<<<<< HEAD
 const multer = require('multer');
-=======
-const btPayment = require("braintree");
-
-// const gateway = new braintree.BraintreeGateway({
-//   environment: braintree.Environment.Sandbox,
-//   merchantId: config.get("braintree_merchant_id"),
-//   publicKey: config.get("braintree_merchant_public_key"),
-//   privateKey: config.get("braintree_merchant_private_key")
-// });
 
 /*
 網站基本API
@@ -132,7 +122,6 @@ router.route("/submitOrder")
     }
   )
 })
->>>>>>> 1332a5b (Revert "Merge branch 'master' of https://github.com/RyanYeh57/My_shop")
 
 const upload = multer({
   limit: {
