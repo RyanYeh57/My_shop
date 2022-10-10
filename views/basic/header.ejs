@@ -61,7 +61,7 @@
             後臺管理
           </a>
           <hr class="navbar-divider">
-          <a class="navbar-item is-white" href="/edit">
+          <a class="beFirm navbar-item is-white" id="beFirm">
             成為廠商
           </a>
           <a class="navbar-item is-white" href="/logout" id="log_out">登出</a>
@@ -99,8 +99,10 @@
         $('#user').show()
         if (cust.type !== '2') {
           $('#backend').hide();
+          $('#beFirm').show();
         } else {
           $('#backend').show();
+          $('#beFirm').hide();
         }
       } else {
         $('#user').hide()
@@ -114,9 +116,9 @@
         }
       }
     })
+
     // 解析 cookie
     function getCookie(name) {
-      // 例如 custaccount=.... 是否存在
       let nameEq = name + "=";
       // 因 cookie 資料為字串形式, 各項資料以;做分割
       // 所以檢查方式為用 ; 分割後檢查每一筆資料開頭是否為 custaccount=
@@ -133,12 +135,33 @@
       }
       return false;
     }
+    // 成為廠商
+    $('#beFirm').click((evt) => {
+      evt.preventDefault;
+      beFirm();
+    })
+
+    function beFirm() {
+      let cust = JSON.parse(localStorage.getItem("custAccount"))
+      axios.patch(`api/firm/${cust.id}`)
+      .then((res) => {
+          if (res.status === 200) {
+            alert('成為廠商成功!請重新登入');
+            window.localStorage.removeItem("custAccount");
+            window.location.href = "/login";
+          }
+        })
+        .catch((error) => {
+          alert(error);
+          location.reload();
+        })
+    }
 
     // 登出
-     $('#log_out').click((evt) => {
-        evt.preventDefault;
-        log_out();
-      })
+    $('#log_out').click((evt) => {
+      evt.preventDefault;
+      log_out();
+    })
 
     function log_out() {
       window.localStorage.removeItem("custAccount"); 

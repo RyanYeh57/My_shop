@@ -117,6 +117,23 @@ router.route("/edit/:id")
     }
     )
 })
+// 成為廠商
+router.route("/firm/:id")
+.patch((req, res) => {
+  let cust_id = req.params.id;
+  mysqlDb.query(
+    "UPDATE custaccount SET type = ? WHERE id = ?",
+    ['2', cust_id],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(400).json({message:"bad request!"})
+      } else {
+        res.status(200).json({message:"update successfully!"})
+      }
+    }
+    )
+})
 
 // 取得會員歷史訂單
 router.route("/histroy/:id")
