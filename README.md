@@ -2,7 +2,8 @@
 本專案為實作購物網站
 
 ## DEMO 圖片
-
+### 首頁
+![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E9%A6%96%E9%A0%81.png)
 ## 使用技術
 + frontend: bulma/axios/ejs
 + backend: nodejs/multer/express
