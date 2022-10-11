@@ -4,125 +4,6 @@ const mysqlDb = require('../connection/mySqlConnetion')
 const Mongoclient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017/products'
 const multer = require('multer');
-
-/*
-網站基本API
-*/
-// 取得所有商品
-router.route("/products")
-.get((req, res) => {
-  // mysql 取得資料
-  // 1 -> mysql 取得成功, mongodb 取得圖片資料  
-  mysqlDb.query(
-    "SELECT * FROM products;",
-    (err, result) => {
-      if (err) {
-        res.status(500).json({message:"Mysql error"});
-      } else {
-        Mongoclient.connect(url, (err, client) => {
-          if (err) {
-            res.status(500).json({message:"Mongodb error"});
-          } else {
-            let db = client.db('products');
-            db.collection('image').find().toArray((err, imageList) => {
-              if (err) {
-                res.status(500).json({message:"Mongodb error"});
-              } else {
-                for (let j = 0;j < imageList.length; j+=1) {
-                  for (let i = 0;i < result.length; i+=1) {
-                    let productId = result[i].id;
-                    if (productId === imageList[j].id) {
-                      result[i].img = imageList[j].image;
-                    }
-                  }
-                }
-                res.status(200).json({productList:result});
-              }
-            })
-          }
-        })
-      }
-    }
-  )
-})
-// 登入會員
-router.route("/login")
-.post((req, res) => {
-  // 查詢帳號密碼
-  let data = req.body;
-  mysqlDb.query(
-    "SELECT * FROM custaccount WHERE account = ? and password = ?;",[data.account, data.password], // 代入前端的登入資訊
-    (err, result) => {
-      if (err) {
-        res.status(400).json({message:"bad requert!"});
-      } else {
-        if (result != null && result[0] != undefined && result[0].id != null) {
-          let custAccount = JSON.parse(JSON.stringify(result[0])); // 先將 result[0] 轉成字串之後用 JSON.parse 轉成 json 格式
-          custAccount.password = null; // 給前端為空值 (隱藏的意思)
-          res.status(200).json({custAccount: custAccount});
-        } else {
-          res.status(400).json({message:"Not correct account or password!"});
-        }
-      }
-    }
-    )
-
-})
-// 註冊會員
-router.route("/register")
-.post((req, res) => {
-  let data = req.body;
-  mysqlDb.query(
-    "INSERT INTO custaccount (account, password, type, name, cellphone, email, birthday) VALUES (?, ? , ? , ? , ? , ? ,?);",
-    [data.account, data.password, 1, data.name, data.cellphone, data.email, data.birthday],
-    (err, result) => {
-      if (err) {
-        console.log(err)
-        res.status(400).json({message:"bad request!"});
-      } else {
-        // result 在 insert 成功後會回傳 insertId
-        if (result != null && result.insertId != null) {
-          res.status(201).json({message:"insert successfully!"})
-        } else {
-          res.status(400).json({message:"bad request!"}); 
-        }
-      }
-    }
-    )
-})
-// 取得會員歷史訂單
-router.route("/histroy/:id")
-.get((req, res) => {
-  let cust_id = req.params.id;
-  mysqlDb.query(
-    "SELECT * FROM shop_order WHERE cust_id = ?",[cust_id],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(400).json({message:"mysql error"})
-      } else {
-        res.status(200).json({result:result})
-      }
-    }
-    )
-})
-// 金流API
-router.route("/submitOrder")
-.post((req, res) => {
-  let data = req.body;
-  mysqlDb.query(
-    "INSERT INTO shop_order (cust_id, cust_name, phone, address, status, total) VALUES (?, ?, ?, ?, ?, ?)",
-    [data.custAccount.id, data.order.name, data.order.phone, data.order.address, 1, data.order.tatal],
-    (err, result) => {
-      if (err) {
-        res.status(400).json({message:"mysql error"});
-      } else {
-        res.status(201).json({message:"insert successfully!"})
-      }
-    }
-  )
-})
-
 const upload = multer({
   limit: {
     // 限制上傳檔案大小為 10000000 byte
@@ -134,7 +15,7 @@ const upload = multer({
 網站基本API
 */
 // 取得所有商品
-router.route("/products")
+router.route("/product")
 .get((req, res) => {
   // mysql 取得資料
   // mysql 取得成功, mongodb 取得圖片資料  
@@ -368,7 +249,7 @@ router.route("/product/:id")
                 }
               )     
             } else {
-              res.status(400).json({message:"mongodb error"})
+              res.status(200).json() // 沒上傳新圖片也成功 
             }
           }
         })

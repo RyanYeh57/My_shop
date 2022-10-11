@@ -225,7 +225,7 @@
     $(document).ready(
       
       function init() {
-        axios.get('/api/products')
+        axios.get('/api/product')
         .then((res) => {
           let html = "";
           if (res.status === 200 && res.data.productList !== null 
@@ -256,15 +256,13 @@
           for (let i = 0; i < productList.length; i++){
             btn2 = document.querySelector(`#showMod-${productList[i].id}`)  
             md2 = new BulmaModal("#modal2")
-
+            md2.addEventListener('modal:show')
+            md2.addEventListener("modal:close")
             btn2.addEventListener("click", function () {
               md2.show()
               showModifyModal(JSON.stringify(productList[i]))
-              console.log(productList[i].id)
             })
 
-            md2.addEventListener('modal:show')
-            md2.addEventListener("modal:close")
             $(`#delete-${productList[i].id}`).on('click', () => {deleteProduct(JSON.stringify(productList[i]))});
           }
           

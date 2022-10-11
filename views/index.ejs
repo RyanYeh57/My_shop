@@ -21,7 +21,7 @@
     // 初始化時將商品資料從資料庫取出，並將它儲存到 productList
     $(document).ready(
       function init() {
-        axios.get('/api/products')
+        axios.get('/api/product')
         .then((res) => {
           let html = "";
           if (res.status === 200) {

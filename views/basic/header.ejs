@@ -74,7 +74,6 @@
         cust = window.localStorage.getItem("custAccount");
       }
       cust = JSON.parse(cust) // 從字串轉換回 JSON
-      console.log(cust);
       if (cust !== null) {
         $('#userName').html(`<i class="fas fa-user"></i>&nbsp;：${cust.name}`);
         $('#log_in').hide();
@@ -94,7 +93,6 @@
       if ( shopcart !== null) {
         if (shopcart) {
           shopcart = JSON.parse(shopcart);
-          console.log(shopcart)
           $('#shopcart').html(`<i class="fas fa-shopping-cart"></i>&nbsp;購物車(${shopcart.length})`)
         }
       }
