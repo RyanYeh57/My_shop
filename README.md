@@ -49,17 +49,11 @@
 ## 使用說明：
 1. 請先確認有安裝 node.js 及 npm
 2. 打開 Terminal ，並複製此專案的 Clone 至本機電腦
-
-    $ git clone https://github.com/RyanYeh57/My_shop.git
-
+   $ git clone https://github.com/RyanYeh57/My_shop.git
 3. 進入專案資料夾
-
     $ cd my_shop
-
 4. 安裝所需套件
-
     $ npm install
-
 5. 啟動 MySQL 伺服器並創建資料庫 「myshop」
 6. 到 my_shop/connection 中的複製所有 SQL 檔案並創建 table 
 7. 到 my_shop/connection/mySqlConnetion.js 輸入 MySQL 的連接資訊
@@ -72,10 +66,8 @@
 }
 ```
 8. 啟動 MongoDBCompass 並創建資料庫「products」並新增 Collection「image」
-9. 快速啟動
-    
+9. 快速啟動  
     $ npm start
-
 10. 在瀏覽器中輸入`http://localhost:3000/` 使用網站
 
 ## 開發工具
