@@ -50,15 +50,15 @@
 1. 請先確認有安裝 node.js 及 npm
 2. 打開 Terminal ，並複製此專案的 Clone 至本機電腦
 ```
-     $ git clone https://github.com/RyanYeh57/My_shop.git
+$ git clone https://github.com/RyanYeh57/My_shop.git
 ```
 3. 進入專案資料夾
 ```
-     $ cd my_shop
+$ cd my_shop
 ```
 4. 安裝所需套件
 ```   
-     $ npm install
+$ npm install
 ```
 5. 啟動 MySQL 伺服器並創建資料庫 「myshop」
 6. 到 my_shop/connection 中的複製所有 SQL 檔案並創建 table 
