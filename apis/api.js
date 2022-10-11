@@ -139,7 +139,7 @@ router.route("/products")
   // mysql 取得資料
   // mysql 取得成功, mongodb 取得圖片資料  
   mysqlDb.query(
-    "SELECT * FROM product;",
+    "SELECT * FROM products;",
     (err, result) => {
       if (err) {
         res.status(500).json({message:"Mysql error"});
@@ -299,18 +299,18 @@ router.route("/product")
       imageSrting = `data:image/gif;base64,${file.buffer.toString('base64')}`
     }
     mysqlDb.query(
-      "INSERT INTO product (name, description, amount, inventory, status) VALUES (?, ?, ?, ?, ?);",
+      "INSERT INTO products (name, description, amount, inventory, status) VALUES (?, ?, ?, ?, ?);",
       [data.name, data.desc, data.amount, data.inventory, data.status],
       (err, result) => {
         if (err) {
           console.log(err);
-          res.status(400).json()
+          res.status(400).json({message:"mysql error"})
         } else {
           // 商品資料存入 Mysql 成功後，將照片字串存入 Mongodb 
           Mongoclient.connect(url, (err, client) => {
             if (err) {
               console.log(err);
-              res.status(400).json();
+              res.status(400).json({message:"mongodb error"});
             } else {
               let db = client.db("products");
               let image = db.collection("image");
@@ -319,7 +319,7 @@ router.route("/product")
                 image: imageSrting
               }, (err, response) => {
                 if (err) console.log(err)
-                else res.status(200).json()
+                else res.status(200).json({message:"bad request"})
               })
             }
           })
@@ -340,15 +340,17 @@ router.route("/product/:id")
   }
   // 用 id 更新 Mysql 
   mysqlDb.query(
-    "UPDATE product SET name= ?, description = ?, amount = ?, inventory = ?, status = ? WHEREs id = ?;",
+    "UPDATE products SET name= ?, description = ?, amount = ?, inventory = ?, status = ? WHERE id = ?;",
     [data.name, data.desc, data.amount, data.inventory, data.status, id], 
     (err, result) => {
       if (err) {
-        res.status(400).json("1")
+        console.log(err);
+        res.status(400).json()
       } else {
         Mongoclient.connect(url, (err, client) => {
           if (err) {
-            res.status(400).json("2")
+            console.log(err);
+            res.status(400).json({message:"mysql error"})
           } else {
             if (imgString != null && imgString.length > 0) {
               let db = client.db("products");
@@ -358,14 +360,15 @@ router.route("/product/:id")
                 {$set: {"image": imgString}},
                 (err, response) => {
                   if (err) {
-                    res.status(400).json("3");
+                    console.log(err);
+                    res.status(400).json({message:"mongodb error"});
                   } else {
-                    res.status(200).json();
+                    res.status(200).json({message:"update suseccfuly!"});
                   }
                 }
               )     
             } else {
-              res.status(200).json()
+              res.status(400).json({message:"mongodb error"})
             }
           }
         })
@@ -379,11 +382,12 @@ router.route("/product/:id")
 .delete((req, res) =>{
   let id = req.params.id;
   mysqlDb.query(
-    "DELETE FROM product WHERE id = ?;",
+    "DELETE FROM products WHERE id = ?;",
     [id],
     (err, result) => {
       if (err) {
-        res.status(400).json();
+        console.log(err)
+        res.status(400).json({message:"mysql error"});
       } else {
         Mongoclient.connect(url, (err, client) =>{
           let db = client.db('products');
@@ -392,9 +396,9 @@ router.route("/product/:id")
             {id:Number(id)},
             (err, response) => {
               if (err) {
-                res.status(400).json();
+                res.status(400).json({message:"mongodb error"});
               } else {
-                res.status(200).json();
+                res.status(200).json({message:"delete suseccfuly!"});
               }
             }
           ) 

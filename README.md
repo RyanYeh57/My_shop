@@ -1,7 +1,8 @@
 # MyShop 
-本專案為實作購物網站
+本專案為node.js + express 實作的購物網站，可以模擬購物網站的會員系統、廠商後台的商品管理以及消費者購物及訂單狀況。
 
-## DEMO 圖片
+
+## 畫面呈現
 ### 首頁
 ![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E9%A6%96%E9%A0%81.png)
 ### 登入頁面
@@ -26,11 +27,6 @@
 ![image](https://github.com/RyanYeh57/My_shop/blob/master/public/img/%E8%A8%82%E5%96%AE%E7%B4%80%E9%8C%84.png)
 
 
-## 使用技術
-+ frontend: bulma/axios/ejs
-+ backend: nodejs/multer/express
-+ database: mysql/mongodb
-
 ## 功能
 
 ### 登入前：
@@ -48,3 +44,41 @@
 ### 廠商登入後：
 + 廠商可以擁有一般會員的功能
 + 廠商可以使用後台管理商品(新增、修改、刪除)
+
+
+## 使用說明：
+1. 請先確認有安裝 node.js 及 npm
+2. 打開 Terminal ，並複製此專案的 Clone 至本機電腦
+
+    $ git clone https://github.com/RyanYeh57/My_shop.git
+
+3. 進入專案資料夾
+
+    $ cd my_shop
+
+4. 安裝所需套件
+
+    $ npm install
+
+5. 啟動 MySQL 伺服器並創建資料庫 「myshop」
+6. 到 my_shop/connection 中的複製所有 SQL 檔案並創建 table 
+7. 到 my_shop/connection/mySqlConnetion.js 輸入 MySQL 的連接資訊
+```
+{
+  "host":"HOST",
+  "user":"USER",
+  "password":"PASSWORD",
+  "database":"myshop"
+}
+```
+8. 啟動 MongoDBCompass 並創建資料庫「products」並新增 Collection「image」
+9. 快速啟動
+    
+    $ npm start
+
+10. 在瀏覽器中輸入`http://localhost:3000/` 使用網站
+
+## 開發工具
++ frontend: bulma/axios/ejs
++ backend: nodejs/multer/express
++ database: mysql/mongodb
